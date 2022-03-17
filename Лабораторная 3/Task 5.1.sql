@@ -1,0 +1,1 @@
+SELECT Distinct Top(2) Firm_name, Checking_account FROM CUSTOMERS Order by Checking_account Asc;
