@@ -220,7 +220,54 @@ update PROGRESS set NOTE = 9 where IDSTUDENT = 1021
 
 ---------------------------- Task 7 ----------------------------
 
+deallocate Local
 
+set nocount on
+
+declare @firm nvarchar(20), @address nvarchar(20)
+declare Local cursor global static scroll for select Firm_name, Customer_address from CUSTOMERS
+
+open Local
+print 'Все: '
+fetch Local into @firm, @address
+while @@FETCH_STATUS = 0
+	begin
+		print '' + @firm + ' ' + @address
+		fetch Local into @firm, @address
+	end
+close Local
+
+open Local
+print 'Первая строка: '
+fetch first from Local into @firm, @address
+print @firm + '' +  @address
+
+print 'Вторая строка (absolute)'
+fetch absolute 2 from Local into @firm, @address
+print @firm +''  + @address
+
+print 'Пятая строка с конца (absolute)'
+fetch absolute -5 from Local into @firm, @address
+print @firm + '' + @address
+
+print 'Вторая строка (relative)'
+fetch relative 2 from Local into @firm, @address
+print @firm +''  +  @address
+
+print 'Следующая строка: '
+fetch next from Local into @firm, @address
+print @firm + ''  + @address
+
+print 'Предшевствующая строка: '
+fetch prior from Local into @firm, @address
+print @firm + ''  + @address
+
+print 'Последняя строка: '
+fetch last from Local into @firm, @address
+print @firm +''  +  @address
+
+close Local
+go
 
 ---------------------------- Task 8 ----------------------------
 

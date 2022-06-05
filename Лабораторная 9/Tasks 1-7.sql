@@ -153,3 +153,18 @@ select name [Индекс], avg_fragmentation_in_percent [Фрагментация (%)]
 
 ---------------------- Task 7 ----------------------
 
+USE VK_MyBASE
+
+exec sp_helpindex CUSTOMERS
+exec sp_helpindex GOODS
+exec sp_helpindex  ORDERS
+
+checkpoint;
+dbcc dropcleanbuffers
+
+create index task7 on CUSTOMERS(Firm_name)
+
+drop index task7 on CUSTOMERS 
+
+select * from CUSTOMERS where Firm_name like 'Samsung' --0.0032842 --0.0032831
+
