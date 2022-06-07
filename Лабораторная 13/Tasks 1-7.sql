@@ -104,10 +104,6 @@ go
 select PULPIT, dbo.fcteacher(PULPIT)[Общее количество преподавателей] from TEACHER group by PULPIT
 select dbo.fcteacher(null) [Общее количество преподавателей]
 
--------------------------- Task 5 --------------------------
-
-
-
 -------------------------- Task 6 --------------------------
 USE [UNIVER-4]
 
@@ -359,3 +355,25 @@ exec @rez = PFACULTY_REPORTX @pulpit = 'ИСиТ'
 print ('');
 print 'Код процедуры: ' + cast (@rez as nvarchar(10)) 
 go
+
+-----
+go
+create function marks (@ff nvarchar(20)) returns table
+as return
+	select * from PROGRESS
+	where PROGRESS.SUBJECT = @ff
+go
+
+select * from marks('СУБД');
+
+----
+drop function diciplines;
+
+go
+create function diciplines (@ff nvarchar(20)) returns table
+as return
+	select * from TIMETABLE
+	where TIMETABLE.TEACHER = @ff
+go
+
+select * from diciplines('ЖЛК');

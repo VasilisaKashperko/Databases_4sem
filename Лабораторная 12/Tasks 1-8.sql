@@ -1,4 +1,5 @@
 --------------------------------- Task 1 ---------------------------------
+
 use [UNIVER-4];
 go
 create procedure PSUBJECT
@@ -340,3 +341,83 @@ declare @rez int
 exec @rez = PFACULTY_REPORT @p = 'qwerty'
 print 'Код процедуры: ' + cast (@rez as nvarchar(10)) 
 go
+
+
+------------------------------------------------------
+
+drop function Diciplines;
+
+use [UNIVER-4]
+
+go
+create function Diciplines(@f varchar(20)) returns char (300)
+as
+begin
+declare @res char(20);
+declare @r char(300) = 'Предметы: ';
+declare Dicipl cursor local
+for select * from TIMETABLE
+	where TIMETABLE.TEACHER = @f;
+	open Dicipl;
+	fetch Dicipl into @res;
+	while @@FETCH_STATUS  = 0
+	begin
+	set @r = @r +', ' + rtrim(@res);
+	fetch Dicipl into @res;
+end;
+return @r;
+end;
+go
+
+
+declare @y int = 0, @z varchar(20) = 'ЖЛК'
+exec @y = Diciplines @f = @z
+print cast(@r as nvarchar)
+
+--------------------------------------
+
+use [UNIVER-4];
+go
+create procedure prepod @g varchar(20)
+as
+begin
+	declare @k int = (select COUNT(*) from SUBJECT);
+	select SUBJECT [Код], TEACHER [Препод] from TIMETABLE where TEACHER = @g;
+	return @k;
+end;
+
+declare @y int = 0, @t = 'ЖЛК';
+exec @y = PSUBJECT, @g = @t;
+print cast(@y as varchar(300));
+
+drop procedure PSUBJECT;
+
+-----------------------------------------------------
+drop procedure prepod2;
+
+go
+   create procedure prepod2  @p CHAR(50)
+   as  
+   declare @rc int = 0;          
+      declare @tv char(20), @t char(300) = ' ';  
+      declare Prep CURSOR  for 
+      select SUBJECT [Код] from TIMETABLE where TEACHER = @p;
+      open Prep;	  
+  fetch  Prep into @tv;   
+  print   'Предметы';   
+  while @@fetch_status = 0                                     
+   begin 
+       set @t = rtrim(@tv) + ', ' + @t;  
+       set @rc = @rc + 1;       
+       fetch  Prep into @tv; 
+    end;   
+print @t;        
+close  Prep;
+    return @rc;
+go
+
+declare @rc int;  
+exec @rc = prepod2 @p  = 'ЖЛК';  
+print 'Предметы: ' + cast(@rc as varchar(3)); 
+
+
